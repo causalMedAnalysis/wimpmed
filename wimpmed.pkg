@@ -1,0 +1,14 @@
+d 'WIMPMED': module to perform causal mediation analysis using an imputation-based weighting estimator
+d
+d wimpmed performs causal mediation analysis using an imputation-based weighting estimator.
+d      
+d Requires: Stata version 15
+d
+d Distribution-Date: 20240827
+d
+d Author: Geoff Wodtke, University of Chicago
+d Support: email wodtke@@uchicago.edu
+d
+f wimpmed.ado
+f wimpmedbs.ado
+f wimpmed.sthlp
