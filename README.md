@@ -23,6 +23,7 @@ wimpmed depvar mvars, dvar(varname) d(real) dstar(real) yreg(string) [options]
 - `nointeraction`: Specifies whether treatment-mediator interactions are included in the outcome model (default is to include interactions).
 - `cxd`: Includes all two-way interactions between the treatment and baseline covariates in the outcome models.
 - `cxm`: Includes all two-way interactions between the mediators and baseline covariates in the outcome model.
+- `censor`: Specifies that the inverse probability weights are censored at their 1st and 99th percentiles.
 - `sampwts(varname)`: Specifies a variable containing sampling weights to include in the analysis.
 - `reps(integer)`: Number of replications for bootstrap resampling (default is 200).
 - `strata(varname)`: Identifies resampling strata.
@@ -49,14 +50,17 @@ use nlsy79.dta
 // Single mediator with default settings
 wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) reps(1000)
 
-// Single mediator with all two-way interactions
-wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm reps(1000)
+// Single mediator with censored weights
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor reps(1000)
+
+// Single mediator with all two-way interactions and censored weights
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm censor reps(1000)
 
 // Single mediator with all two-way interactions and detailed output
 wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm reps(1000) detail
 
-// Multiple mediators with default settings
-wimpmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) reps(1000)
+// Multiple mediators with censored weights
+wimpmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor reps(1000)
 ```
 
 ## Saved Results
@@ -80,4 +84,4 @@ Email: [wodtke@uchicago.edu](mailto:wodtke@uchicago.edu)
 
 ## Also See
 
-- Help: [regress R](#), [logit R](#), [bootstrap R](#)
+- Help: [regress](#), [logit](#), [bootstrap](#)
