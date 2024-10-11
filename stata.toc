@@ -13,7 +13,7 @@ package ^wimpmed^ from https://github.com/causalMedAnalysis/wimpmed
 
 ^DESCRIPTION/AUTHOR(S)^
       
-impmed performs causal mediation analysis using an imputation-based weighting estimator.
+wimpmed performs causal mediation analysis using an imputation-based weighting estimator.
       
 Requires: Stata version 15
       
