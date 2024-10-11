@@ -1,4 +1,4 @@
-# wimpmed: Causal Mediation Analysis Using an Imputation-Based Weighting Estimator
+# wimpmed: A Stata Module for Causal Mediation Analysis Using an Imputation-Based Weighting Estimator
 
 `wimpmed` is a Stata module designed to perform causal mediation analysis using an imputation-based weighting estimator. This approach is suitable for analyses with single or multiple mediators.
 
@@ -23,13 +23,8 @@ wimpmed depvar mvars, dvar(varname) d(real) dstar(real) yreg(string) [options]
 - `nointeraction`: Specifies whether treatment-mediator interactions are included in the outcome model (default is to include interactions).
 - `cxd`: Includes all two-way interactions between the treatment and baseline covariates in the outcome models.
 - `cxm`: Includes all two-way interactions between the mediators and baseline covariates in the outcome model.
-- `censor`: Specifies that the inverse probability weights are censored at their 1st and 99th percentiles.
 - `sampwts(varname)`: Specifies a variable containing sampling weights to include in the analysis.
-- `reps(integer)`: Number of replications for bootstrap resampling (default is 200).
-- `strata(varname)`: Identifies resampling strata.
-- `cluster(varname)`: Identifies resampling clusters.
-- `level(cilevel)`: Confidence level for constructing bootstrap confidence intervals (default is 95%).
-- `seed(passthru)`: Seed for replicable bootstrap resampling.
+- `censor`: Specifies that the inverse probability weights are censored at their 1st and 99th percentiles.
 - `detail`: Prints the fitted models for the outcome and exposure used to construct effect estimates.
 
 ## Description
@@ -39,7 +34,9 @@ wimpmed depvar mvars, dvar(varname) d(real) dstar(real) yreg(string) [options]
 2. A model for the outcome conditional on the exposure, baseline covariates, and mediator(s).
 3. A logit model for the exposure conditional on baseline covariates.
 
-`wimpmed` provides estimates of total, natural direct, and natural indirect effects when a single mediator is specified. When multiple mediators are specified, `wimpmed` estimates multivariate natural direct and indirect effects.
+`wimpmed` provides estimates of total, natural direct, and natural indirect effects when a single mediator is specified. When multiple mediators are specified, `wimpmed` estimates multivariate natural direct and indirect effects. Inferential statistics are computed using the nonparametric bootstrap.
+
+`wimpmed` allows sampling weights via the `sampwts` option, but it does not internally rescale them for use with the bootstrap. If using weights from a complex sample design that require rescaling to produce valid boostrap estimates, the user must be sure to appropriately specify the `strata`, `cluster`, and `size` options from the `bootstrap` command so that Nc-1 clusters are sampled within from each stratum, where Nc denotes the number of clusters per stratum. Failure to properly adjust the bootstrap sampling to account for a complex sample design that requires weighting could lead to invalid inferential statistics.
 
 ## Examples
 
@@ -48,19 +45,19 @@ wimpmed depvar mvars, dvar(varname) d(real) dstar(real) yreg(string) [options]
 use nlsy79.dta
 
 // Single mediator with default settings
-wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) reps(1000)
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress)
 
-// Single mediator with censored weights
-wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor reps(1000)
+// Single mediator with censored weights at 1st and 99th percentiles
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor(1 99)
 
 // Single mediator with all two-way interactions and censored weights
-wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm censor reps(1000)
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm censor(1 99)
 
-// Single mediator with all two-way interactions and detailed output
-wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm reps(1000) detail
+// Single mediator with all two-way interactions, 1000 bootstrap replications, and detailed output
+wimpmed std_cesd_age40 ever_unemp_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) cxd cxm detail reps(1000) 
 
-// Multiple mediators with censored weights
-wimpmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor reps(1000)
+// Multiple mediators with censored weights and 1000 bootstrap replications
+wimpmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) yreg(regress) censor(1 99) reps(1000)
 ```
 
 ## Saved Results
