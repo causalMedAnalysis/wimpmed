@@ -24,8 +24,9 @@ wimpmed depvar mvars, dvar(varname) d(real) dstar(real) yreg(string) [options]
 - `cxd`: Includes all two-way interactions between the treatment and baseline covariates in the outcome models.
 - `cxm`: Includes all two-way interactions between the mediators and baseline covariates in the outcome model.
 - `sampwts(varname)`: Specifies a variable containing sampling weights to include in the analysis.
-- `censor`: Specifies that the inverse probability weights are censored at their 1st and 99th percentiles.
+- `censor(numlist)`: Censors the inverse probability weights at the percentiles provided in `numlist`.
 - `detail`: Prints the fitted models for the outcome and exposure used to construct effect estimates.
+- `bootstrap_options`: All `bootstrap` options are available.
 
 ## Description
 
